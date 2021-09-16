@@ -41,13 +41,65 @@ tbody {
   overflow: auto;
   background-color: aliceblue;
 }
+#getAll{
+    width: 200px;
+    height: 40px;
+}
+#getOne{
+    width: 200px;
+    height: 40px;
+}
+#getOnePeriod{
+    width: 200px;
+    height: 40px;
+}
+#calculate{
+    width: 200px;
+    height: 40px;
+}
+#country{
+    width: 300px;
+    height: 40px;
+}
+#amount{
+    width: 300px;
+    height: 40px;
+}
+#container{
+	display: inline-block;
+    text-align: center;
+	position: absolute;
+	top: 25%;
+   right: 33%;
+}
+#textContainer{
+	display: inline-block;
+    text-align: center;
+	position: absolute;
+	top: 21.5%;
+   right: 39%;
+}
+
+#headingOfAll{
+	display: inline-block;
+    text-align: center;
+	position: absolute;
+	top: 15%;
+   right: 35%;
+}
+
 </style>
-<div id= "buttons">
+<div id="headingOfAll">
+	<h1 id="h1Change">Currency Display and Calculator</h1>
+</div>
+<div id="textContainer">
+	<input type="text" id = "country" maxlength="3" placeholder="Enter Country">
+	<input type="text" id = "amount" placeholder="Enter Amount">
+</div>
+<div id= "container">
 	<button id="getAll" onclick='loadThejson("http://localhost:8080/db/all");'> Show Current </button>
 	<button id="getOne" onclick='loadThejsonOne();'> Show One </button>
 	<button id="getOnePeriod" onclick='callBoth("http://localhost:8080/db/all/period");'> Show Period </button>
-	<input type="text" id = "country" maxlength="3" placeholder="Enter Country">
-	<input type="text" id = "amount" placeholder="Enter Amount">
 	<button id="calculate" onclick='calculateOne();'> Calculate </button>
 </div>
 <div id="wrapper">
@@ -62,6 +114,7 @@ tbody {
     </tbody>
 </table>
 </div>
+
 <script>
 	async function loadThejson(url){
 	const response = await fetch(url);
@@ -70,8 +123,12 @@ tbody {
 	console.log(data)
 	}
 
+	async function loadPeriod(){
+	var input = document.getElementById("country").value;
+	fetch("http://localhost:8080/range/"+input.toUpperCase()+"/2021-05-05/2021-09-05");
+	}
+
 	async function loadThePeriod(url){
-	loadPeriod();
 	const response = await fetch(url);
 	const data = await response.json();
 	buildTable(data)
@@ -98,8 +155,7 @@ tbody {
 	const data = await response.json();
 	var outputNumber = parseFloat(data.value);
 	var converted = inputNumber * outputNumber;
-
-	alert("This is the amount in "+ converted.toFixed(2)+data.name);
+	document.getElementById("h1Change").innerHTML = "You get "+converted.toFixed(2)+data.name+" out of "+inputNumber+"€ on "+outputNumber+" rate."
 	}
 
 	function callBoth(url){
@@ -107,10 +163,6 @@ tbody {
 		loadThePeriod(url);
 	}
 
-	async function loadPeriod(){
-	var input = document.getElementById("country").value;
-	fetch("http://localhost:8080/range/"+input.toUpperCase()+"/2021-05-05/2021-09-05");
-	}
 
 
 	function buildTable(data){
@@ -138,7 +190,17 @@ tbody {
 			table.innerHTML += row
 	}
 
-	loadDb("http://localhost:8080/current");
+	var setJob = (function(){
+		var executed = false;
+		return function(){
+			if(!executed){
+				executed = true;
+				loadDb("http://localhost:8080/runJob");
+			}
+		};
+	})();
+
+	setJob();
 
 </script>
 

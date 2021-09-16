@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<body style="background-color:#D0D0D0">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<style>
+
+#wrapper {
+  width: 1000px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  /* bring your own prefixes */
+  transform: translate(-50%, -50%);
+}
+
+table {
+  border: 1px solid black;
+  width: 100%;
+}
+
+th,
+td {
+  width: 500px;
+  border: 1px solid black;
+  overflow: hidden;
+}
+
+thead>tr {
+  position: relative;
+  display: block;
+  background-color: aliceblue;
+  margin-right: 17px;
+}
+
+tbody {
+  display: block;
+  height: 500px;
+  overflow: auto;
+  background-color: aliceblue;
+}
+</style>
+<div id= "buttons">
+	<button id="getAll" onclick='loadThejson("http://localhost:8080/db/all");'> Show Current </button>
+	<button id="getOne" onclick='loadThejsonOne();'> Show One </button>
+	<button id="getOnePeriod" onclick='callBoth("http://localhost:8080/db/all/period");'> Show Period </button>
+	<input type="text" id = "country" maxlength="3" placeholder="Enter Country">
+	<input type="text" id = "amount" placeholder="Enter Amount">
+	<button id="calculate" onclick='calculateOne();'> Calculate </button>
+</div>
+<div id="wrapper">
+<table class="table" style="overflow-y:scroll">
+	<thead>
+    <tr  class="bg-info">
+        <th>Country</th>
+        <th>Currency</th>
+    </tr>
+</thead>
+    <tbody id="myTable">   
+    </tbody>
+</table>
+</div>
+<script>
+	async function loadThejson(url){
+	const response = await fetch(url);
+	const data = await response.json();
+	buildTable(data)
+	console.log(data)
+	}
+
+	async function loadThePeriod(url){
+	loadPeriod();
+	const response = await fetch(url);
+	const data = await response.json();
+	buildTable(data)
+	}
+
+	async function loadDb(url){
+	const response = await fetch(url);
+	const data = await response.json();
+	}
+
+	async function loadThejsonOne(){
+	var input = document.getElementById("country").value;
+	const response = await fetch("http://localhost:8080/db/one/"+input.toUpperCase());
+	const data = await response.json();
+	buildTableOne(data)
+	console.log(data)
+	}
+
+	async function calculateOne(){
+	var input = document.getElementById("country").value;
+	var inputNumber = parseFloat(document.getElementById("amount").value);
+	console.log(inputNumber);
+	const response = await fetch("http://localhost:8080/db/one/"+input.toUpperCase());
+	const data = await response.json();
+	var outputNumber = parseFloat(data.value);
+	var converted = inputNumber * outputNumber;
+
+	alert("This is the amount in "+ converted.toFixed(2)+data.name);
+	}
+
+	function callBoth(url){
+		loadPeriod();
+		loadThePeriod(url);
+	}
+
+	async function loadPeriod(){
+	var input = document.getElementById("country").value;
+	fetch("http://localhost:8080/range/"+input.toUpperCase()+"/2021-05-05/2021-09-05");
+	}
+
+
+	function buildTable(data){
+		var table = document.getElementById('myTable')
+		table.innerHTML = ""
+
+		for (var i = 0; i < data.length; i++){
+			var row = `<tr>
+							<td>${data[i].name}</td>
+							<td>${data[i].value}</td>
+					  </tr>`
+			table.innerHTML += row
+
+
+		}
+	}
+
+	function buildTableOne(data){
+		var table = document.getElementById('myTable')
+		table.innerHTML = ""
+			var row = `<tr>
+							<td>${data.name}</td>
+							<td>${data.value}</td>
+					  </tr>`
+			table.innerHTML += row
+	}
+
+	loadDb("http://localhost:8080/current");
+
+</script>
+
+</body>
+</html>

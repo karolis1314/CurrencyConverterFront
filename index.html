@@ -8,12 +8,12 @@
 <style>
 
 #wrapper {
-  width: 1000px;
+  /* width: 1000px;
   position: fixed;
   top: 50%;
-  left: 50%;
+  left: 50%; */
   /* bring your own prefixes */
-  transform: translate(-50%, -50%);
+  /* transform: translate(-50%, -50%); */
 }
 
 table {
@@ -65,54 +65,46 @@ tbody {
     width: 300px;
     height: 40px;
 }
-#container{
-	display: inline-block;
-    text-align: center;
-	position: absolute;
-	top: 25%;
-   right: 33%;
-}
-#textContainer{
-	display: inline-block;
-    text-align: center;
-	position: absolute;
-	top: 21.5%;
-   right: 39%;
-}
 
 #headingOfAll{
-	display: inline-block;
     text-align: center;
-	position: absolute;
-	top: 15%;
-   right: 35%;
+}
+
+#contentContainer{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 10px
 }
 
 </style>
-<div id="headingOfAll">
-	<h1 id="h1Change">Currency Display and Calculator</h1>
-</div>
-<div id="textContainer">
-	<input type="text" id = "country" maxlength="3" placeholder="Enter Country">
-	<input type="text" id = "amount" placeholder="Enter Amount">
-</div>
-<div id= "container">
-	<button id="getAll" onclick='loadThejson("http://localhost:8080/db/all");'> Show Current </button>
-	<button id="getOne" onclick='loadThejsonOne();'> Show One </button>
-	<button id="getOnePeriod" onclick='callBoth("http://localhost:8080/db/all/period");'> Show Period </button>
-	<button id="calculate" onclick='calculateOne();'> Calculate </button>
-</div>
-<div id="wrapper">
-<table class="table" style="overflow-y:scroll">
-	<thead>
-    <tr  class="bg-info">
-        <th>Country</th>
-        <th>Currency</th>
-    </tr>
-</thead>
-    <tbody id="myTable">   
-    </tbody>
-</table>
+<div id="contentContainer">
+	<div id="headingOfAll">
+		<h1 id="h1Change">Currency Display and Calculator</h1>
+	</div>
+	<div id="textContainer">
+		<input type="text" id = "country" maxlength="3" placeholder="Enter Country">
+		<input type="text" id = "amount" placeholder="Enter Amount">
+	</div>
+	<div id= "container">
+		<button id="getAll" onclick='loadThejson("http://localhost:8080/db/all");'> Show Current </button>
+		<button id="getOne" onclick='loadThejsonOne();'> Show One </button>
+		<button id="getOnePeriod" onclick='callBoth("http://localhost:8080/db/all/period");'> Show Period </button>
+		<button id="calculate" onclick='calculateOne();'> Calculate </button>
+	</div>
+	<div id="wrapper">
+	<table class="table" style="overflow-y:scroll">
+		<thead>
+		<tr  class="bg-info">
+			<th>Country</th>
+			<th>Currency</th>
+		</tr>
+	</thead>
+		<tbody id="myTable">   
+		</tbody>
+	</table>
+	</div>
 </div>
 
 <script>
@@ -123,20 +115,16 @@ tbody {
 	console.log(data)
 	}
 
-	async function loadPeriod(){
-	var input = document.getElementById("country").value;
-	fetch("http://localhost:8080/range/"+input.toUpperCase()+"/2021-05-05/2021-09-05");
-	}
-
-	async function loadThePeriod(url){
-	const response = await fetch(url);
-	const data = await response.json();
-	buildTable(data)
+	async function loadPeriod(url){
+		var input = document.getElementById("country").value;
+		await fetch("http://localhost:8080/range/"+input.toUpperCase()+"/2021-05-05/2021-09-05");
+		const response = await fetch(url);
+		const data = await response.json();
+		buildTable(data)
 	}
 
 	async function loadDb(url){
-	const response = await fetch(url);
-	const data = await response.json();
+		await fetch(url)
 	}
 
 	async function loadThejsonOne(){
@@ -159,8 +147,7 @@ tbody {
 	}
 
 	function callBoth(url){
-		loadPeriod();
-		loadThePeriod(url);
+		loadPeriod(url);
 	}
 
 
@@ -190,17 +177,11 @@ tbody {
 			table.innerHTML += row
 	}
 
-	var setJob = (function(){
-		var executed = false;
-		return function(){
-			if(!executed){
-				executed = true;
-				loadDb("http://localhost:8080/runJob");
-			}
-		};
+	var setJob = (async function(){
+		await loadDb("http://localhost:8080/runJob");
 	})();
 
-	setJob();
+	setJob;
 
 </script>
 

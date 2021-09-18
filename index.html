@@ -1,22 +1,20 @@
 <!DOCTYPE html>
 <html>
-<body style="background-color:#D0D0D0">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<body style="background: #aa4b6b;  /* fallback for old browsers */
+	background: -webkit-linear-gradient(to right, #3b8d99, #6b6b83, #aa4b6b);  /* Chrome 10-25, Safari 5.1-6 */
+	background: linear-gradient(to right, #3b8d99, #6b6b83, #aa4b6b); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+	">
+		<script
+			src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<link rel="stylesheet"
+			href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+			integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+			crossorigin="anonymous">
 
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
-<style>
-
-#wrapper {
-  /* width: 1000px;
-  position: fixed;
-  top: 50%;
-  left: 50%; */
-  /* bring your own prefixes */
-  /* transform: translate(-50%, -50%); */
-}
+		<style>
 
 table {
+  color: #e0c98e; 
   border: 1px solid black;
   width: 100%;
 }
@@ -31,8 +29,7 @@ td {
 thead>tr {
   position: relative;
   display: block;
-  background-color: aliceblue;
-  margin-right: 17px;
+
 }
 
 tbody {
@@ -40,34 +37,57 @@ tbody {
   height: 500px;
   overflow: auto;
   background-color: aliceblue;
+
 }
-#getAll{
+#getAll, #getOne,#getOnePeriod, #calculate{
     width: 200px;
     height: 40px;
+  background-image: linear-gradient(92.88deg, #455EB5 9.16%, #5643CC 43.89%, #673FD7 64.72%);
+  border-radius: 8px;
+  border-style: none;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-family: "Inter UI","SF Pro Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Open Sans","Helvetica Neue",sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 0 1.6rem;
+  text-align: center;
+  text-shadow: rgba(0, 0, 0, 0.25) 0 3px 8px;
+  transition: all .5s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
 }
-#getOne{
-    width: 200px;
-    height: 40px;
+
+#getAll:hover,#getOne:hover, #getOnePeriod:hover, #calculate:hover{
+  box-shadow: rgba(80, 63, 205, 0.5) 0 1px 30px;
+  transition-duration: .1s;
 }
-#getOnePeriod{
-    width: 200px;
-    height: 40px;
+
+@media (min-width: 768px) {
+	#getAll, #getOne, #getOnePeriod, #calculate {
+    padding: 0 2.6rem;
+  }
 }
-#calculate{
-    width: 200px;
-    height: 40px;
-}
-#country{
+
+#country,#amount{
     width: 300px;
     height: 40px;
+ 	padding:10px;
+  	border-radius:10px;
 }
-#amount{
-    width: 300px;
-    height: 40px;
-}
+
 
 #headingOfAll{
     text-align: center;
+	color: #e0c98e; 
+	font-family: 'Droid serif', serif; 
+	font-size: 36px; font-weight: 400; 
+	font-style: italic; 
+	line-height: 44px; 
+	margin: 0 0 12px;
 }
 
 #contentContainer{
@@ -79,79 +99,110 @@ tbody {
 }
 
 </style>
-<div id="contentContainer">
-	<div id="headingOfAll">
-		<h1 id="h1Change">Currency Display and Calculator</h1>
-	</div>
-	<div id="textContainer">
-		<input type="text" id = "country" maxlength="3" placeholder="Enter Country">
-		<input type="text" id = "amount" placeholder="Enter Amount">
-	</div>
-	<div id= "container">
-		<button id="getAll" onclick='loadThejson("http://localhost:8080/db/all");'> Show Current </button>
-		<button id="getOne" onclick='loadThejsonOne();'> Show One </button>
-		<button id="getOnePeriod" onclick='callBoth("http://localhost:8080/db/all/period");'> Show Period </button>
-		<button id="calculate" onclick='calculateOne();'> Calculate </button>
-	</div>
-	<div id="wrapper">
-	<table class="table" style="overflow-y:scroll">
-		<thead>
-		<tr  class="bg-info">
-			<th>Country</th>
-			<th>Currency</th>
-		</tr>
-	</thead>
-		<tbody id="myTable">   
-		</tbody>
-	</table>
-	</div>
-</div>
+		<div id="contentContainer">
+			<div id="headingOfAll">
+				<h1 id="h1Change">Currency Display and Calculator</h1>
+			</div>
+			<div id="textContainer">
+				<input type="text" id="country" maxlength="3" placeholder="Enter Country">
+				<input type="text" id="amount" placeholder="Enter Amount">
+			</div>
+			<div id="container">
+				<button id="getAll" onclick='loadThejson(" http://localhost:8080/db/all");'> Show Current </button>
+				<button id="getOne" onclick='loadThejsonOne();'> Show One </button>
+				<button id="getOnePeriod" onclick='loadPeriod("http://localhost:8080/db/all/period" );'> Show Period </button>
+				<button id="calculate" onclick='calculateOne();'> Calculate </button>
+			</div>
+			<div id="wrapper">
+				<table class="table" style="overflow-y:scroll;">
+					<thead>
+						<tr class="bg-info">
+							<th>Country</th>
+							<th>Currency</th>
+						</tr>
+					</thead>
+					<tbody id="myTable">
+					</tbody>
+				</table>
+			</div>
+		</div>
 
-<script>
+		<script>
+	//Gets the data from the db
 	async function loadThejson(url){
 	const response = await fetch(url);
 	const data = await response.json();
-	buildTable(data)
-	console.log(data)
+	buildTable(data);
 	}
 
+
+	//Getting time period
 	async function loadPeriod(url){
+		if(document.getElementById("country").value == "" || document.getElementById("country").value == null){
+			alert("Please enter a country.")
+		}else{
 		var input = document.getElementById("country").value;
-		await fetch("http://localhost:8080/range/"+input.toUpperCase()+"/2021-05-05/2021-09-05");
+		const rep = await fetch("http://localhost:8080/range/"+input.toUpperCase()+"/2021-05-05/2021-09-05");
+		if(rep.status === 500){
+			alert("No country found!");
+		}else{
 		const response = await fetch(url);
 		const data = await response.json();
-		buildTable(data)
+		buildTable(data);
+		alert("Currency period is shown from 2021-05-05 to 2021-09-05.")
+		}
+	
+		}
+		resetTextFields();
+	
 	}
+
 
 	async function loadDb(url){
 		await fetch(url)
 	}
 
+	//Geting one currency selected
 	async function loadThejsonOne(){
 	var input = document.getElementById("country").value;
-	const response = await fetch("http://localhost:8080/db/one/"+input.toUpperCase());
+	if(input=== "" || input === null){
+		alert("Please enter a vlaue!");
+	}else{
+		const response = await fetch("http://localhost:8080/db/one/"+input.toUpperCase());
+	if(!response.ok){
+		alert("Currency was not found status "+ response.status);
+	}else{
 	const data = await response.json();
 	buildTableOne(data)
-	console.log(data)
+	}
+		}
+		resetTextFields();
 	}
 
+	//Calculator function
 	async function calculateOne(){
 	var input = document.getElementById("country").value;
 	var inputNumber = parseFloat(document.getElementById("amount").value);
-	console.log(inputNumber);
-	const response = await fetch("http://localhost:8080/db/one/"+input.toUpperCase());
-	const data = await response.json();
-	var outputNumber = parseFloat(data.value);
-	var converted = inputNumber * outputNumber;
-	document.getElementById("h1Change").innerHTML = "You get "+converted.toFixed(2)+data.name+" out of "+inputNumber+"€ on "+outputNumber+" rate."
+	if(input=== "" || input === null || inputNumber=== "" || inputNumber === null){
+		alert("Please enter both values.");
+	}if(isNaN(inputNumber)){
+		alert("Value must be a valid number.")
+	}else{
+		const response = await fetch("http://localhost:8080/db/one/"+input.toUpperCase());
+		if(response.ok){
+			const data = await response.json();
+		var outputNumber = parseFloat(data.value);
+		var converted = inputNumber * outputNumber;
+		document.getElementById("h1Change").innerHTML = "You get "+converted.toFixed(2)+data.name+" out of "+inputNumber+"€ on "+outputNumber+" rate."
+		}else{
+			alert("No such country.")
+		}
+		
+		}
+		resetTextFields();
 	}
 
-	function callBoth(url){
-		loadPeriod(url);
-	}
-
-
-
+	//Building a table for many currencies
 	function buildTable(data){
 		var table = document.getElementById('myTable')
 		table.innerHTML = ""
@@ -167,6 +218,7 @@ tbody {
 		}
 	}
 
+	//Building a table for one currency to be displayd
 	function buildTableOne(data){
 		var table = document.getElementById('myTable')
 		table.innerHTML = ""
@@ -177,6 +229,12 @@ tbody {
 			table.innerHTML += row
 	}
 
+	function resetTextFields(){
+		document.getElementById("country").value = "";
+		document.getElementById("amount").value = "";
+	}
+
+	//Running a job so the db gets populated
 	var setJob = (async function(){
 		await loadDb("http://localhost:8080/runJob");
 	})();
@@ -184,6 +242,5 @@ tbody {
 	setJob;
 
 </script>
-
-</body>
+	</body>
 </html>
